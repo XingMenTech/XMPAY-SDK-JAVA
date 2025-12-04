@@ -1,0 +1,178 @@
+package com.xmpay.sdk.http;
+
+import cn.hutool.core.annotation.Alias;
+import cn.hutool.http.HttpException;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
+import com.google.protobuf.util.JsonFormat;
+import com.xmpay.sdk.*;
+import com.xmpay.sdk.grpc.GrpcClientUtil;
+import com.xmpay.sdk.grpc.PayClient;
+import com.xmpay.sdk.grpc.PayClient.pay_rpc_param;
+import com.xmpay.sdk.grpc.PayClient.pay_rpc_resp;
+import com.xmpay.sdk.grpc.pay_serviceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.internal.JsonParser;
+import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
+import lombok.Builder;
+import lombok.Data;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
+
+/**
+ * gRPC Client for Pay Service
+ * Implements client methods for all pay service RPCs
+ */
+public class PayHttpClient {
+
+    private static final Logger logger = Logger.getLogger(PayHttpClient.class.getName());
+
+    private static final String CREATE_VIRTUAL_API = "/gateway/api/order/virtual";
+    private static final String CREATE_RECEIVE_API = "/gateway/api/order/receive";
+    private static final String QUERY_RECEIVE_API = "/gateway/api/order/receive/query";
+    private static final String CREATE_OUT_API = "/gateway/api/order/out";
+    private static final String QUERY_OUT_API = "/gateway/api/order/out/query";
+    private static final String CHANNEL_API = "/gateway/api/channel/query";
+    private static final String BALANCE_API = "/gateway/api/merchant/balance";
+
+    private final Aes aes;
+
+    private final String host;
+
+    /**
+     * Construct client for accessing pay service server using the existing channel.
+     *
+     * @param host the managed host
+     *
+     */
+    public PayHttpClient(String host, String appKey, String secret) {
+        this.aes = new Aes(appKey, secret);
+        this.host = host;
+    }
+
+    /**
+     * Create a virtual account
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public Virtual.Resp virtualAccount(Virtual.Param param) throws Exception {
+        logger.info("Calling virtualAccount with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + CREATE_VIRTUAL_API, param);
+        return JSONUtil.toBean(resp, Virtual.Resp.class);
+    }
+
+    /**
+     * Create a receive order
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public Receive.Resp receive(Receive.Param param) throws Exception {
+        logger.info("Calling receive with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + CREATE_RECEIVE_API, param);
+        return JSONUtil.toBean(resp, Receive.Resp.class);
+    }
+
+    /**
+     * Query a receive order
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public OrderQuery.Resp receiveQuery(OrderQuery.Param param) throws Exception {
+        logger.info("Calling receiveQuery with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + QUERY_RECEIVE_API, param);
+        return JSONUtil.toBean(resp, OrderQuery.Resp.class);
+    }
+
+    /**
+     * Create an out payment
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public Out.Resp out(Out.Param param) throws Exception {
+        logger.info("Calling out with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + CREATE_OUT_API, param);
+        return JSONUtil.toBean(resp, Out.Resp.class);
+    }
+
+    /**
+     * Query an out payment
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public OrderQuery.Resp outQuery(OrderQuery.Param param) throws Exception {
+        logger.info("Calling outQuery with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + QUERY_OUT_API, param);
+        return JSONUtil.toBean(resp, OrderQuery.Resp.class);
+    }
+
+    /**
+     * Query channels
+     *
+     * @param param the request data
+     * @return the response
+     */
+    public List<ChannelQuery.RespItem> channelQuery(ChannelQuery.Param param) throws Exception {
+        logger.info("Calling channelQuery with appKey: " + aes.getAppKey());
+
+        String resp = doRequest(host + CHANNEL_API, param);
+
+        return JSONUtil.toList(resp, ChannelQuery.RespItem.class);
+
+    }
+
+    /**
+     * Query merchant balance
+     *
+     * @return the response
+     */
+    public Balance merchantBalance() throws Exception {
+        logger.info("Calling merchantBalance with appKey: " + aes.getAppKey());
+        String resp = doRequest(host + BALANCE_API, null);
+        return JSONUtil.toBean(resp, Balance.class);
+    }
+
+    private String doRequest(String url, Object param) throws Exception {
+        PayParam.PayParamBuilder builder = PayParam.builder().appKey(aes.getAppKey());
+        if (Objects.nonNull(param)) {
+            String jsonStr = JSONUtil.toJsonStr(param);
+            logger.info("Calling channelQuery with param: " + jsonStr);
+            String data = aes.encrypt(jsonStr);
+            builder = builder.data(data);
+        }
+
+        PayParam request = builder.build();
+        String reqStr = JSONUtil.toJsonStr(request);
+        HttpResponse response = HttpUtil.createPost(url)
+                .contentType("application/json")
+                .body(reqStr)
+                .execute();
+
+        if (response.getStatus() != HttpResponseStatus.OK.code()) {
+            throw new HttpException("code:" + response.getStatus() + " message:" + response.body());
+        }
+
+        String data = response.body();
+        PayResp resp = JSONUtil.toBean(data, PayResp.class);
+        if (resp.getCode() != HttpResponseStatus.OK.code()) {
+            throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
+        }
+
+        return aes.decrypt(resp.getData());
+
+    }
+
+
+}
