@@ -7,7 +7,8 @@ import java.util.List;
 public class PayHttpClientExample {
 
     public static void main(String[] args) {
-        PayHttpClient client = new PayHttpClient("http://127.0.0.1:9001", "MLR6Lp6Rmx6hqSKd", "K3HPwtRuAwXhbwhs");
+
+        PayHttpClient client = new PayHttpClient(ExampleParam.httpConfig);
         try {
             //创建虚拟账户
             Virtual.Param virtualParam = ExampleParam.virtualParam;

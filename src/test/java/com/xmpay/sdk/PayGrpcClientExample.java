@@ -11,7 +11,7 @@ public class PayGrpcClientExample {
 
     public static void main(String[] args) {
         // Create a client connecting to the gRPC server
-        PayGrpcClient client = new PayGrpcClient("127.0.0.1", 9002, "MLR6Lp6Rmx6hqSKd", "K3HPwtRuAwXhbwhs");
+        PayGrpcClient client = new PayGrpcClient(ExampleParam.grpcConfig);
 
         try {
             //创建虚拟账户

@@ -2,6 +2,26 @@ package com.xmpay.sdk;
 
 public class ExampleParam {
 
+    public static final PayConfig httpConfig = PayConfig.builder()
+            .apiUrl("http://127.0.0.1:9001")
+            .appKey("MLR6Lp6Rmx6hqSKd")
+            .appSecret("K3HPwtRuAwXhbwhs")
+            .inId(601)
+            .outId(602)
+            .inNotifyUrl("https://manage.xmtest.in/gateway/notify/in")
+            .outNotifyUrl("https://manage.xmtest.in/gateway/notify/out")
+            .build();
+
+    public static final PayConfig grpcConfig = PayConfig.builder()
+            .apiUrl("127.0.0.1:9002")
+            .appKey("MLR6Lp6Rmx6hqSKd")
+            .appSecret("K3HPwtRuAwXhbwhs")
+            .inId(601)
+            .outId(602)
+            .inNotifyUrl("https://manage.xmtest.in/gateway/notify/in")
+            .outNotifyUrl("https://manage.xmtest.in/gateway/notify/out")
+            .build();
+
     public static final Receive.Param receiveParam = Receive.Param.builder()
             .amount(300000)
             .uid("1921")

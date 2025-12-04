@@ -1,5 +1,6 @@
 package com.xmpay.sdk.grpc;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import com.google.protobuf.ByteString;
@@ -25,28 +26,20 @@ public class PayGrpcClient {
 
     private final pay_serviceGrpc.pay_serviceBlockingStub blockingStub;
 
-    private final Aes aes;
+    private final PayConfig config;
 
-    /**
-     * Construct client for accessing pay service server using the existing channel.
-     *
-     * @param channel the managed channel
-     */
-    public PayGrpcClient(ManagedChannel channel, String appKey, String secret) {
-        blockingStub = pay_serviceGrpc.newBlockingStub(channel);
-        aes = new Aes(appKey, secret);
-    }
+    private final Aes aes;
 
     /**
      * Construct client connecting to pay service server at {@code host:port}.
      *
-     * @param host the server host
-     * @param port the server port
+     * @param config the client config
      */
-    public PayGrpcClient(String host, int port, String appKey, String secret) {
-        ManagedChannel channel = GrpcClientUtil.createChannel(host, port);
-        blockingStub = pay_serviceGrpc.newBlockingStub(channel);
-        aes = new Aes(appKey, secret);
+    public PayGrpcClient(PayConfig config) {
+        this.config = config;
+        this.aes = new Aes(config.getAppKey(), config.getAppSecret());
+        ManagedChannel channel = GrpcClientUtil.createChannel(config.getApiUrl());
+        this.blockingStub = pay_serviceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -57,6 +50,13 @@ public class PayGrpcClient {
      */
     public Virtual.Resp virtualAccount(Virtual.Param param) throws Exception {
         logger.info("Calling virtualAccount with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getInId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getInNotifyUrl());
+        }
+
         String jsonStr = JSONUtil.toJsonStr(param);
         logger.info("Calling virtualAccount with param: " + jsonStr);
 
@@ -83,6 +83,12 @@ public class PayGrpcClient {
      */
     public Receive.Resp receive(Receive.Param param) throws Exception {
         logger.info("Calling receive with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getInId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getInNotifyUrl());
+        }
         String jsonStr = JSONUtil.toJsonStr(param);
         logger.info("Calling receive with param: " + jsonStr);
         pay_rpc_param request = pay_rpc_param.newBuilder()
@@ -134,6 +140,12 @@ public class PayGrpcClient {
      */
     public Out.Resp out(Out.Param param) throws Exception {
         logger.info("Calling out with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getOutId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getOutNotifyUrl());
+        }
         String jsonStr = JSONUtil.toJsonStr(param);
         logger.info("Calling out with param: " + jsonStr);
         pay_rpc_param request = pay_rpc_param.newBuilder()
@@ -224,5 +236,9 @@ public class PayGrpcClient {
         String data = resp.getData();
         String decrypt = aes.decrypt(data);
         return JSONUtil.toBean(decrypt, Balance.class);
+    }
+
+    public PayConfig getConfig() {
+        return config;
     }
 }

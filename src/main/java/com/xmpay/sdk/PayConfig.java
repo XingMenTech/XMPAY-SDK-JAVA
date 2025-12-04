@@ -1,0 +1,49 @@
+package com.xmpay.sdk;
+
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+@Builder
+public class PayConfig implements Serializable {
+
+    /**
+     * 接口地址
+     */
+    private String apiUrl;
+    /**
+     * 应用KEY
+     */
+    private String appKey;
+    /**
+     * 应用密钥
+     */
+    private String appSecret;
+    /**
+     * 代理CA证书
+     */
+    private String proxyCa;
+
+    /**
+     * 充值商户ID
+     */
+    private Integer inId;
+
+    /**
+     * 提现商户ID
+     */
+    private Integer outId;
+
+    /**
+     * 充值回调地址
+     */
+    private String inNotifyUrl;
+
+    /**
+     * 提现回调地址
+     */
+    private String outNotifyUrl;
+}

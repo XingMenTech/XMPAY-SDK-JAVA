@@ -31,13 +31,19 @@ public class GrpcClientUtil {
     }
     
     /**
-     * Create a managed channel with default port (80)
+     * Create a managed channel with target
      * 
-     * @param host the server host
+     * @param target the server host
      * @return ManagedChannel for gRPC communication
      */
-    public static ManagedChannel createChannel(String host) {
-        return createChannel(host, 80);
+    public static ManagedChannel createChannel(String target) {
+        return ManagedChannelBuilder.forTarget(target)
+                .usePlaintext() // For testing purposes. In production, use secure connections
+                .keepAliveTime(30, TimeUnit.SECONDS)
+                .keepAliveTimeout(5, TimeUnit.SECONDS)
+                .keepAliveWithoutCalls(true)
+                .maxInboundMessageSize(4 * 1024 * 1024) // 4MB
+                .build();
     }
     
     /**

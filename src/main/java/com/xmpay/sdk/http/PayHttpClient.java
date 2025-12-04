@@ -1,6 +1,7 @@
 package com.xmpay.sdk.http;
 
 import cn.hutool.core.annotation.Alias;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -43,19 +44,23 @@ public class PayHttpClient {
     private static final String CHANNEL_API = "/gateway/api/channel/query";
     private static final String BALANCE_API = "/gateway/api/merchant/balance";
 
+    private final PayConfig config;
+
     private final Aes aes;
+
 
     private final String host;
 
     /**
      * Construct client for accessing pay service server using the existing channel.
      *
-     * @param host the managed host
+     * @param config the managed host
      *
      */
-    public PayHttpClient(String host, String appKey, String secret) {
-        this.aes = new Aes(appKey, secret);
-        this.host = host;
+    public PayHttpClient(PayConfig config) {
+        this.config = config;
+        this.aes = new Aes(config.getAppKey(), config.getAppSecret());
+        this.host = config.getApiUrl();
     }
 
     /**
@@ -66,6 +71,13 @@ public class PayHttpClient {
      */
     public Virtual.Resp virtualAccount(Virtual.Param param) throws Exception {
         logger.info("Calling virtualAccount with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getInId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getInNotifyUrl());
+        }
+
         String resp = doRequest(host + CREATE_VIRTUAL_API, param);
         return JSONUtil.toBean(resp, Virtual.Resp.class);
     }
@@ -78,6 +90,12 @@ public class PayHttpClient {
      */
     public Receive.Resp receive(Receive.Param param) throws Exception {
         logger.info("Calling receive with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getInId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getInNotifyUrl());
+        }
         String resp = doRequest(host + CREATE_RECEIVE_API, param);
         return JSONUtil.toBean(resp, Receive.Resp.class);
     }
@@ -102,6 +120,12 @@ public class PayHttpClient {
      */
     public Out.Resp out(Out.Param param) throws Exception {
         logger.info("Calling out with appKey: " + aes.getAppKey());
+        if(param.getPid() == 0){
+            param.setPid(config.getOutId());
+        }
+        if(StrUtil.isBlank(param.getNotifyUrl())){
+            param.setNotifyUrl(config.getOutNotifyUrl());
+        }
         String resp = doRequest(host + CREATE_OUT_API, param);
         return JSONUtil.toBean(resp, Out.Resp.class);
     }
