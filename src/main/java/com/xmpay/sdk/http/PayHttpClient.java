@@ -32,7 +32,7 @@ import java.util.logging.Logger;
  * gRPC Client for Pay Service
  * Implements client methods for all pay service RPCs
  */
-public class PayHttpClient {
+public class PayHttpClient implements Client {
 
     private static final Logger logger = Logger.getLogger(PayHttpClient.class.getName());
 
@@ -44,7 +44,7 @@ public class PayHttpClient {
     private static final String CHANNEL_API = "/gateway/api/channel/query";
     private static final String BALANCE_API = "/gateway/api/merchant/balance";
 
-    private final PayConfig config;
+    private final Config config;
 
     private final Aes aes;
 
@@ -57,7 +57,7 @@ public class PayHttpClient {
      * @param config the managed host
      *
      */
-    public PayHttpClient(PayConfig config) {
+    public PayHttpClient(Config config) {
         this.config = config;
         this.aes = new Aes(config.getAppKey(), config.getAppSecret());
         this.host = config.getApiUrl();

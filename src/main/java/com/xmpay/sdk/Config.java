@@ -13,7 +13,12 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayConfig implements Serializable {
+public class Config implements Serializable {
+
+    /**
+     * 客户端类型
+     */
+    private ClientType clientType;
 
     /**
      * 接口地址

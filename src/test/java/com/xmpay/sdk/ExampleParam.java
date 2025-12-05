@@ -2,7 +2,7 @@ package com.xmpay.sdk;
 
 public class ExampleParam {
 
-    public static final PayConfig httpConfig = PayConfig.builder()
+    public static final Config httpConfig = Config.builder()
             .apiUrl("http://127.0.0.1:9001")
             .appKey("MLR6Lp6Rmx6hqSKd")
             .appSecret("K3HPwtRuAwXhbwhs")
@@ -12,7 +12,7 @@ public class ExampleParam {
             .outNotifyUrl("https://manage.xmtest.in/gateway/notify/out")
             .build();
 
-    public static final PayConfig grpcConfig = PayConfig.builder()
+    public static final Config grpcConfig = Config.builder()
             .apiUrl("127.0.0.1:9002")
             .appKey("MLR6Lp6Rmx6hqSKd")
             .appSecret("K3HPwtRuAwXhbwhs")

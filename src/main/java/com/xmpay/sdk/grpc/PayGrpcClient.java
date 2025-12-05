@@ -3,30 +3,26 @@ package com.xmpay.sdk.grpc;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
-import com.google.protobuf.ByteString;
-import com.google.protobuf.util.JsonFormat;
 import com.xmpay.sdk.*;
-import io.grpc.ManagedChannel;
 import com.xmpay.sdk.grpc.PayClient.pay_rpc_param;
 import com.xmpay.sdk.grpc.PayClient.pay_rpc_resp;
-import io.grpc.internal.JsonParser;
+import io.grpc.ManagedChannel;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * gRPC Client for Pay Service
  * Implements client methods for all pay service RPCs
  */
-public class PayGrpcClient {
+public class PayGrpcClient  implements Client{
 
     private static final Logger logger = Logger.getLogger(PayGrpcClient.class.getName());
 
     private final pay_serviceGrpc.pay_serviceBlockingStub blockingStub;
 
-    private final PayConfig config;
+    private final Config config;
 
     private final Aes aes;
 
@@ -35,7 +31,7 @@ public class PayGrpcClient {
      *
      * @param config the client config
      */
-    public PayGrpcClient(PayConfig config) {
+    public PayGrpcClient(Config config) {
         this.config = config;
         this.aes = new Aes(config.getAppKey(), config.getAppSecret());
         ManagedChannel channel = GrpcClientUtil.createChannel(config.getApiUrl());
@@ -236,9 +232,5 @@ public class PayGrpcClient {
         String data = resp.getData();
         String decrypt = aes.decrypt(data);
         return JSONUtil.toBean(decrypt, Balance.class);
-    }
-
-    public PayConfig getConfig() {
-        return config;
     }
 }
