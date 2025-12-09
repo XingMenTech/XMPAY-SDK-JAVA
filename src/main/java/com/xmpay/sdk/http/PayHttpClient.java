@@ -1,29 +1,14 @@
 package com.xmpay.sdk.http;
 
-import cn.hutool.core.annotation.Alias;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpException;
-import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSON;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.google.protobuf.util.JsonFormat;
 import com.xmpay.sdk.*;
-import com.xmpay.sdk.grpc.GrpcClientUtil;
-import com.xmpay.sdk.grpc.PayClient;
-import com.xmpay.sdk.grpc.PayClient.pay_rpc_param;
-import com.xmpay.sdk.grpc.PayClient.pay_rpc_resp;
-import com.xmpay.sdk.grpc.pay_serviceGrpc;
-import io.grpc.ManagedChannel;
-import io.grpc.internal.JsonParser;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -46,8 +31,8 @@ public class PayHttpClient implements Client {
 
     private final Config config;
 
+    @Getter
     private final Aes aes;
-
 
     private final String host;
 

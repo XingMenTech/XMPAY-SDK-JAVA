@@ -8,6 +8,7 @@ import com.xmpay.sdk.grpc.PayClient.pay_rpc_param;
 import com.xmpay.sdk.grpc.PayClient.pay_rpc_resp;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  * gRPC Client for Pay Service
  * Implements client methods for all pay service RPCs
  */
-public class PayGrpcClient  implements Client{
+public class PayGrpcClient implements Client {
 
     private static final Logger logger = Logger.getLogger(PayGrpcClient.class.getName());
 
@@ -24,6 +25,7 @@ public class PayGrpcClient  implements Client{
 
     private final Config config;
 
+    @Getter
     private final Aes aes;
 
     /**
@@ -46,10 +48,10 @@ public class PayGrpcClient  implements Client{
      */
     public Virtual.Resp virtualAccount(Virtual.Param param) throws Exception {
         logger.info("Calling virtualAccount with appKey: " + aes.getAppKey());
-        if(param.getPid() == 0){
+        if (param.getPid() == 0) {
             param.setPid(config.getInId());
         }
-        if(StrUtil.isBlank(param.getNotifyUrl())){
+        if (StrUtil.isBlank(param.getNotifyUrl())) {
             param.setNotifyUrl(config.getInNotifyUrl());
         }
 
@@ -66,9 +68,7 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return Virtual.Resp.parseFrom(decrypt);
+        return decrypt(resp.getData(),Virtual.Resp.class);
     }
 
     /**
@@ -79,10 +79,10 @@ public class PayGrpcClient  implements Client{
      */
     public Receive.Resp receive(Receive.Param param) throws Exception {
         logger.info("Calling receive with appKey: " + aes.getAppKey());
-        if(param.getPid() == 0){
+        if (param.getPid() == 0) {
             param.setPid(config.getInId());
         }
-        if(StrUtil.isBlank(param.getNotifyUrl())){
+        if (StrUtil.isBlank(param.getNotifyUrl())) {
             param.setNotifyUrl(config.getInNotifyUrl());
         }
         String jsonStr = JSONUtil.toJsonStr(param);
@@ -97,9 +97,7 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return Receive.Resp.parseFrom(decrypt);
+        return decrypt(resp.getData(),Receive.Resp.class);
     }
 
     /**
@@ -123,9 +121,7 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return JSONUtil.toBean(decrypt, OrderQuery.Resp.class);
+        return decrypt(resp.getData(), OrderQuery.Resp.class);
     }
 
     /**
@@ -136,10 +132,10 @@ public class PayGrpcClient  implements Client{
      */
     public Out.Resp out(Out.Param param) throws Exception {
         logger.info("Calling out with appKey: " + aes.getAppKey());
-        if(param.getPid() == 0){
+        if (param.getPid() == 0) {
             param.setPid(config.getOutId());
         }
-        if(StrUtil.isBlank(param.getNotifyUrl())){
+        if (StrUtil.isBlank(param.getNotifyUrl())) {
             param.setNotifyUrl(config.getOutNotifyUrl());
         }
         String jsonStr = JSONUtil.toJsonStr(param);
@@ -153,9 +149,7 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return Out.Resp.parseFrom(decrypt);
+        return decrypt(resp.getData(),Out.Resp.class);
     }
 
     /**
@@ -179,9 +173,7 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return JSONUtil.toBean(decrypt, OrderQuery.Resp.class);
+        return decrypt(resp.getData(), OrderQuery.Resp.class);
     }
 
     /**
@@ -229,8 +221,6 @@ public class PayGrpcClient  implements Client{
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
-        String data = resp.getData();
-        String decrypt = aes.decrypt(data);
-        return JSONUtil.toBean(decrypt, Balance.class);
+        return decrypt(resp.getData(), Balance.class);
     }
 }
