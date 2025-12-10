@@ -1,8 +1,12 @@
 package com.xmpay.sdk;
 
+import com.xmpay.sdk.models.BaseParam;
+import com.xmpay.sdk.models.Out;
+import com.xmpay.sdk.models.Receive;
+
 public class ExampleParam {
 
-    public static final Config httpConfig = Config.builder()
+    public static final ConfigProperties httpConfig = ConfigProperties.builder()
             .apiUrl("http://127.0.0.1:9001")
             .appKey("MLR6Lp6Rmx6hqSKd")
             .appSecret("K3HPwtRuAwXhbwhs")
@@ -12,7 +16,7 @@ public class ExampleParam {
             .outNotifyUrl("https://manage.xmtest.in/gateway/notify/out")
             .build();
 
-    public static final Config grpcConfig = Config.builder()
+    public static final ConfigProperties grpcConfig = ConfigProperties.builder()
             .apiUrl("127.0.0.1:9002")
             .appKey("MLR6Lp6Rmx6hqSKd")
             .appSecret("K3HPwtRuAwXhbwhs")
@@ -37,6 +41,7 @@ public class ExampleParam {
             .build();
 
     public static final Out.Param outParam = Out.Param.builder()
+
             .amount(300000)
             .uid("1921")
             .ip("192.168.1.116")
@@ -54,7 +59,7 @@ public class ExampleParam {
             .body("testOut")
             .build();
 
-    public static final Virtual.Param virtualParam = Virtual.Param.builder()
+    public static final BaseParam virtualParam = BaseParam.builder()
             .uid("1921")
             .ip("192.168.1.116")
             .email("Yukdkskkssls@gmail.com")

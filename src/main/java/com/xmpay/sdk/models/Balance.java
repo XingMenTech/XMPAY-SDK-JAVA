@@ -1,4 +1,4 @@
-package com.xmpay.sdk;
+package com.xmpay.sdk.models;
 
 import lombok.Data;
 

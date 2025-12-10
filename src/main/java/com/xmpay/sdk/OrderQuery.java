@@ -2,7 +2,6 @@ package com.xmpay.sdk;
 
 import cn.hutool.core.annotation.Alias;
 import cn.hutool.json.JSONUtil;
-import com.google.protobuf.*;
 import lombok.Builder;
 import lombok.Data;
 

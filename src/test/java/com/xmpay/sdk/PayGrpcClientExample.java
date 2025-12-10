@@ -1,6 +1,7 @@
 package com.xmpay.sdk;
 
 import com.xmpay.sdk.grpc.PayGrpcClient;
+import com.xmpay.sdk.models.*;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class PayGrpcClientExample {
 
         try {
             //创建虚拟账户
-            Virtual.Param virtualParam = ExampleParam.virtualParam;
+            BaseParam virtualParam = ExampleParam.virtualParam;
             virtualParam.setOrderNo("virtual_" + System.currentTimeMillis());
             Virtual.Resp virtual = client.virtualAccount(virtualParam);
             System.out.println("Virtual Response: " + virtual);

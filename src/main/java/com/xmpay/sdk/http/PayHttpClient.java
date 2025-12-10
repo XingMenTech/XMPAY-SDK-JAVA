@@ -6,8 +6,8 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.xmpay.sdk.*;
+import com.xmpay.sdk.models.*;
 import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
-import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * gRPC Client for Pay Service
  * Implements client methods for all pay service RPCs
  */
-public class PayHttpClient implements Client {
+public class PayHttpClient  extends AbstractClient {
 
     private static final Logger logger = Logger.getLogger(PayHttpClient.class.getName());
 
@@ -29,23 +29,20 @@ public class PayHttpClient implements Client {
     private static final String CHANNEL_API = "/gateway/api/channel/query";
     private static final String BALANCE_API = "/gateway/api/merchant/balance";
 
-    private final Config config;
-
-    @Getter
-    private final Aes aes;
+    private final ConfigProperties configProperties;
 
     private final String host;
 
     /**
      * Construct client for accessing pay service server using the existing channel.
      *
-     * @param config the managed host
+     * @param configProperties the managed host
      *
      */
-    public PayHttpClient(Config config) {
-        this.config = config;
-        this.aes = new Aes(config.getAppKey(), config.getAppSecret());
-        this.host = config.getApiUrl();
+    public PayHttpClient(ConfigProperties configProperties) {
+        super(configProperties.getAppKey(), configProperties.getAppSecret());
+        this.configProperties = configProperties;
+        this.host = configProperties.getApiUrl();
     }
 
     /**
@@ -54,13 +51,13 @@ public class PayHttpClient implements Client {
      * @param param the request data
      * @return the response
      */
-    public Virtual.Resp virtualAccount(Virtual.Param param) throws Exception {
+    public Virtual.Resp virtualAccount(BaseParam param) throws Exception {
         logger.info("Calling virtualAccount with appKey: " + aes.getAppKey());
         if(param.getPid() == 0){
-            param.setPid(config.getInId());
+            param.setPid(configProperties.getInId());
         }
         if(StrUtil.isBlank(param.getNotifyUrl())){
-            param.setNotifyUrl(config.getInNotifyUrl());
+            param.setNotifyUrl(configProperties.getInNotifyUrl());
         }
 
         String resp = doRequest(host + CREATE_VIRTUAL_API, param);
@@ -76,10 +73,10 @@ public class PayHttpClient implements Client {
     public Receive.Resp receive(Receive.Param param) throws Exception {
         logger.info("Calling receive with appKey: " + aes.getAppKey());
         if(param.getPid() == 0){
-            param.setPid(config.getInId());
+            param.setPid(configProperties.getInId());
         }
         if(StrUtil.isBlank(param.getNotifyUrl())){
-            param.setNotifyUrl(config.getInNotifyUrl());
+            param.setNotifyUrl(configProperties.getInNotifyUrl());
         }
         String resp = doRequest(host + CREATE_RECEIVE_API, param);
         return JSONUtil.toBean(resp, Receive.Resp.class);
@@ -106,10 +103,10 @@ public class PayHttpClient implements Client {
     public Out.Resp out(Out.Param param) throws Exception {
         logger.info("Calling out with appKey: " + aes.getAppKey());
         if(param.getPid() == 0){
-            param.setPid(config.getOutId());
+            param.setPid(configProperties.getOutId());
         }
         if(StrUtil.isBlank(param.getNotifyUrl())){
-            param.setNotifyUrl(config.getOutNotifyUrl());
+            param.setNotifyUrl(configProperties.getOutNotifyUrl());
         }
         String resp = doRequest(host + CREATE_OUT_API, param);
         return JSONUtil.toBean(resp, Out.Resp.class);

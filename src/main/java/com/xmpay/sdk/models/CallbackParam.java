@@ -1,6 +1,5 @@
-package com.xmpay.sdk;
+package com.xmpay.sdk.models;
 
-import com.google.protobuf.*;
 import lombok.Data;
 
 import java.io.Serializable;

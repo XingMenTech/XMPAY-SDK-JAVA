@@ -13,7 +13,8 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Config implements Serializable {
+public class ConfigProperties implements Serializable {
+    private static final long serialVersionUID = 0L;
 
     /**
      * 客户端类型
