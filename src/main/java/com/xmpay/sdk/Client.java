@@ -2,7 +2,6 @@ package com.xmpay.sdk;
 
 import com.xmpay.sdk.models.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface Client {
@@ -63,19 +62,19 @@ public interface Client {
     Balance merchantBalance() throws Exception;
 
     /**
-     * 解密数据
-     *
-     * @param data 待解密数据
-     * @param clazz 解密后的对象类型
-     * @return 解密后的对象
-     */
-//     <T> T decrypt(String data, Class<T> clazz) throws Exception;
-
-    /**
-     * 回调处理
+     * 回调处理(jakarta.servlet)
      *
      * @param request 请求对象
      * @param executor 回调执行器
      */
-    void callback(HttpServletRequest request, CallbackExecutor executor) throws Exception;
+    void callback(jakarta.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception;
+
+    /**
+     * 回调处理(javax.servlet)
+     *
+     *
+     * @param request 请求对象
+     * @param executor 回调执行器
+     */
+    void callback(javax.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception;
 }
