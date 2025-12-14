@@ -62,14 +62,6 @@ public interface Client {
     Balance merchantBalance() throws Exception;
 
     /**
-     * 回调处理(jakarta.servlet)
-     *
-     * @param request 请求对象
-     * @param executor 回调执行器
-     */
-    void callback(jakarta.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception;
-
-    /**
      * 回调处理(javax.servlet)
      *
      *

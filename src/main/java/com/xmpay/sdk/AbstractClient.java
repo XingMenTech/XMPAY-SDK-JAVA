@@ -19,23 +19,7 @@ public abstract class AbstractClient implements Client {
         return JSONUtil.toBean(decrypt, clazz);
     }
 
-    public void callback(jakarta.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception {
-        String appKey = request.getParameter("appKey");
-        if (StrUtil.isBlank(appKey) || !appKey.equals(getAes().getAppKey())) {
-            throw new RuntimeException("The appKey parameter is invalid");
-        }
-        String data = request.getParameter("data");
-        if (StrUtil.isBlank(data)) {
-            throw new RuntimeException("The data parameter is invalid");
-        }
-
-        String decrypt = getAes().decrypt(data);
-
-        CallbackParam callbackParam = JSONUtil.toBean(decrypt, CallbackParam.class);
-
-        executor.execute(callbackParam);
-    }
-
+    @Override
     public void callback(javax.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception {
         String appKey = request.getParameter("appKey");
         if (StrUtil.isBlank(appKey) || !appKey.equals(getAes().getAppKey())) {
