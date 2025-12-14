@@ -1,7 +1,7 @@
 package com.xmpay.sdk;
 
 public enum OrderStatus {
-    WAIT(0), PROCESSING(1), ABNORMAL(2), FAILURE(9), SUCCESS(10), UNRECOGNIZED(-1);
+    WAIT(0), PROCESSING(1), ABNORMAL(2),EXPIRED(3), FAILURE(9), SUCCESS(10), UNRECOGNIZED(-1);
 
     private final int value;
 
