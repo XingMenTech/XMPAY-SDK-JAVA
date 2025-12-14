@@ -3,6 +3,7 @@ package com.xmpay.sdk;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.xmpay.sdk.models.CallbackParam;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 
 public abstract class AbstractClient implements Client {
@@ -20,7 +21,7 @@ public abstract class AbstractClient implements Client {
     }
 
     @Override
-    public void callback(javax.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception {
+    public void callback(HttpServletRequest request, CallbackExecutor executor) throws Exception {
         String appKey = request.getParameter("appKey");
         if (StrUtil.isBlank(appKey) || !appKey.equals(getAes().getAppKey())) {
             throw new RuntimeException("The appKey parameter is invalid");

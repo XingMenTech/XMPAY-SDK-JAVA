@@ -1,6 +1,7 @@
 package com.xmpay.sdk;
 
 import com.xmpay.sdk.models.*;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -62,11 +63,11 @@ public interface Client {
     Balance merchantBalance() throws Exception;
 
     /**
-     * 回调处理(javax.servlet)
+     * 回调处理(jakarta.servlet)
      *
      *
      * @param request 请求对象
      * @param executor 回调执行器
      */
-    void callback(javax.servlet.http.HttpServletRequest request, CallbackExecutor executor) throws Exception;
+    void callback(HttpServletRequest request, CallbackExecutor executor) throws Exception;
 }
