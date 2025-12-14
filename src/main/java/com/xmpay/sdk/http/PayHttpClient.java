@@ -3,6 +3,7 @@ package com.xmpay.sdk.http;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpException;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.xmpay.sdk.AbstractClient;
@@ -10,7 +11,6 @@ import com.xmpay.sdk.ChannelQuery;
 import com.xmpay.sdk.ConfigProperties;
 import com.xmpay.sdk.OrderQuery;
 import com.xmpay.sdk.models.*;
-import io.grpc.netty.shaded.io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.List;
 import java.util.Objects;
@@ -171,13 +171,13 @@ public class PayHttpClient  extends AbstractClient {
                 .body(reqStr)
                 .execute();
 
-        if (response.getStatus() != HttpResponseStatus.OK.code()) {
+        if (response.getStatus() != HttpStatus.HTTP_OK) {
             throw new HttpException("code:" + response.getStatus() + " message:" + response.body());
         }
 
         String data = response.body();
         PayResp resp = JSONUtil.toBean(data, PayResp.class);
-        if (resp.getCode() != HttpResponseStatus.OK.code()) {
+        if (resp.getCode() != HttpStatus.HTTP_OK) {
             throw new RuntimeException("code:" + resp.getCode() + " message:" + resp.getMessage());
         }
 
