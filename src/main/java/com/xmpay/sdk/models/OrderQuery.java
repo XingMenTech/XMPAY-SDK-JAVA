@@ -1,7 +1,8 @@
-package com.xmpay.sdk;
+package com.xmpay.sdk.models;
 
 import cn.hutool.core.annotation.Alias;
 import cn.hutool.json.JSONUtil;
+import com.xmpay.sdk.OrderStatus;
 import lombok.Builder;
 import lombok.Data;
 

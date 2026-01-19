@@ -7,9 +7,9 @@ import cn.hutool.http.HttpStatus;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.xmpay.sdk.AbstractClient;
-import com.xmpay.sdk.ChannelQuery;
+import com.xmpay.sdk.models.ChannelQuery;
 import com.xmpay.sdk.ConfigProperties;
-import com.xmpay.sdk.OrderQuery;
+import com.xmpay.sdk.models.OrderQuery;
 import com.xmpay.sdk.models.*;
 
 import java.util.List;
