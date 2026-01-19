@@ -23,16 +23,13 @@ public class PayGrpcClient extends AbstractClient {
 
     private final pay_serviceGrpc.pay_serviceBlockingStub blockingStub;
 
-    private final ConfigProperties configProperties;
-
     /**
      * Construct client connecting to pay service server at {@code host:port}.
      *
      * @param configProperties the client config
      */
     public PayGrpcClient(ConfigProperties configProperties) {
-        super(configProperties.getAppKey(), configProperties.getAppSecret());
-        this.configProperties = configProperties;
+        super(configProperties);
         ManagedChannel channel = GrpcClientUtil.createChannel(configProperties.getApiUrl());
         this.blockingStub = pay_serviceGrpc.newBlockingStub(channel);
     }

@@ -34,7 +34,6 @@ public class PayHttpClient  extends AbstractClient {
     private static final String CHANNEL_API = "/gateway/api/channel/query";
     private static final String BALANCE_API = "/gateway/api/merchant/balance";
 
-    private final ConfigProperties configProperties;
 
     private final String host;
 
@@ -45,8 +44,7 @@ public class PayHttpClient  extends AbstractClient {
      *
      */
     public PayHttpClient(ConfigProperties configProperties) {
-        super(configProperties.getAppKey(), configProperties.getAppSecret());
-        this.configProperties = configProperties;
+        super(configProperties);
         this.host = configProperties.getApiUrl();
     }
 

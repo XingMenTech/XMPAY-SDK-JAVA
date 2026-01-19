@@ -11,8 +11,11 @@ public abstract class AbstractClient implements Client {
     @Getter
     protected final Aes aes;
 
-    public AbstractClient(String appKey, String secret) {
-        this.aes = new Aes(appKey, secret);
+    protected final ConfigProperties configProperties;
+
+    public AbstractClient(ConfigProperties properties) {
+        this.configProperties = properties;
+        this.aes = new Aes(properties.getAppKey(), properties.getAppSecret());
     }
 
     protected <T> T decrypt(String data, Class<T> clazz) throws Exception {
